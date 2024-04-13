@@ -1,5 +1,3 @@
-from logging.config import fileConfig
-
 from sqlalchemy import engine_from_config
 from sqlalchemy import pool
 
@@ -12,7 +10,7 @@ load_dotenv()
 username = os.environ.get("DB_USER")
 password = os.environ.get("DB_PASSWORD")
 host = os.environ.get("DB_HOST")
-database = os.environ.get("DB_DATABASE")
+database = os.environ.get("DB_NAME")
 port = os.environ.get("DB_PORT")
 
 
@@ -25,7 +23,7 @@ config = context.config
 if not config.get_main_option("sqlalchemy.url"):
     config.set_main_option(
         "sqlalchemy.url",
-        f"postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}",
+        f"postgresql+psycopg2://{username}:{password}@{host}:{port}/{database}",
     )
 
 # add your model's MetaData object here

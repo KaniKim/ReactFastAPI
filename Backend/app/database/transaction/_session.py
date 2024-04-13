@@ -9,7 +9,7 @@ from sqlalchemy.ext.asyncio import (
     AsyncEngine,
 )
 
-from database.transaction import password, database, host, port, username
+from app.database.transaction import password, database, host, port, username
 
 
 class DatabaseSessionManager:
@@ -30,7 +30,9 @@ class DatabaseSessionManager:
         database: str,
     ):
         self.engine = create_async_engine(
-            f"postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}"
+            f"postgresql+asyncpg://{username}:{password}@{host}:{port}/{database}",
+            echo=True,
+            pool_size=10,
         )
 
         self.session_maker = async_sessionmaker(

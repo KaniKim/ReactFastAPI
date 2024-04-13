@@ -6,11 +6,13 @@ Create Date: 2024-04-13 18:13:08.855688
 
 """
 
+import datetime
 from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
 
+from app.choice.user import ROLE
 
 # revision identifiers, used by Alembic.
 revision: str = "846e486353f0"
@@ -31,6 +33,13 @@ def upgrade() -> None:
         sa.Column("first_name", sa.String(length=255), nullable=False),
         sa.Column("last_name", sa.String(length=255), nullable=False),
         sa.Column("phone_number", sa.String(length=255), nullable=True),
+        sa.Column("role", sa.String(length=255), nullable=False, default=ROLE.NORMAL),
+        sa.Column(
+            "created_at", sa.DateTime(), nullable=False, default=datetime.datetime.now()
+        ),
+        sa.Column(
+            "updated_at", sa.DateTime(), nullable=False, default=datetime.datetime.now()
+        ),
     )
 
 

@@ -2,10 +2,10 @@ import uuid
 from abc import ABC
 from typing import Callable, List
 
-from sqlalchemy import select
+from sqlalchemy import select, update, delete, exists
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.schema.user import UserCreate, User
+from app.schema.user import UserCreate, User, UserUpdate
 from app.entity.user import UserEntity
 
 
@@ -19,10 +19,13 @@ class UserBaseRepository(ABC):
     async def update_user_by_id(self, user_id: int, user: User) -> User:
         pass
 
-    async def delete_user_by_id(self, user_id: int) -> None:
+    async def delete_user_by_id(self, user_id: int) -> bool:
         pass
 
     async def get_all_user(self) -> List[User] | None:
+        pass
+
+    async def check_user_by_id(self, user_id: int) -> bool:
         pass
 
 
@@ -60,5 +63,24 @@ class UserRepository(UserBaseRepository):
 
         return User.model_validate(result)
 
+    async def check_user_by_id(self, user_id: uuid.UUID) -> bool:
+        return await self.db.scalar(select(exists().where(UserEntity.id == user_id)))
+
     async def create_user(self, user: UserCreate) -> None:
         self.db.add(UserEntity(**user.dict()))
+
+    async def update_user_by_id(self, user_id: int, user: UserUpdate) -> bool:
+        result = await self.db.execute(
+            update(UserEntity)
+            .where(UserEntity.id == user_id)
+            .values(**user.dict(exclude_unset=True))
+        )
+
+        return result.rowcount > 0
+
+    async def delete_user_by_id(self, user_id: int) -> bool:
+        result = await self.db.execute(
+            delete(UserEntity).where(UserEntity.id == user_id)
+        )
+
+        return result.rowcount > 0

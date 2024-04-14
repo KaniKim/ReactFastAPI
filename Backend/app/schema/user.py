@@ -1,5 +1,6 @@
 import datetime
 import uuid
+from typing import Optional
 
 from pydantic import BaseModel, EmailStr, ConfigDict
 
@@ -11,6 +12,14 @@ class UserCreate(BaseModel):
     password: str
     first_name: str
     last_name: str
+
+
+class UserUpdate(BaseModel):
+    first_name: str | None = None
+    last_name: str | None = None
+    phone_number: str | None = None
+    nick_name: str | None = None
+    role: str | None = None
 
 
 class User(UserCreate):

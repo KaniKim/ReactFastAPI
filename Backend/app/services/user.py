@@ -6,7 +6,7 @@ from passlib.context import CryptContext
 from app.choice.user import ROLE
 from app.database.transaction._session import sessionmanager
 from app.repository.user import UserRepository
-from app.schema.user import User, UserCreate
+from app.schema.user import User, UserCreate, UserUpdate
 
 
 class UserService:
@@ -20,6 +20,17 @@ class UserService:
             result = await self.user_repo.get_all_user()
 
         return result
+
+    async def update_user(self, user_id: uuid.UUID, user: UserUpdate) -> User | None:
+        if await self.user_repo.check_user_by_id(user_id=user_id):
+            await self.user_repo.update_user_by_id(user_id=user_id, user=user)
+            return await self.user_repo.get_user_by_id(user_id=user_id)
+        return None
+
+    async def delete_user(self, user_id: uuid.UUID) -> bool:
+        if await self.user_repo.check_user_by_id(user_id=user_id):
+            return await self.user_repo.delete_user_by_id(user_id=user_id)
+        return False
 
     async def create_user(self, user: UserCreate) -> None:
         user.password = self.get_password_hash(user.password)

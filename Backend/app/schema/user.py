@@ -1,24 +1,24 @@
 import datetime
+import uuid
 
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, ConfigDict
 
 from app.choice.user import ROLE
 
 
-class UserLogin(BaseModel):
+class UserCreate(BaseModel):
     email: EmailStr
     password: str
     first_name: str
     last_name: str
-    nick_name: str | None
 
 
-class User(UserLogin):
-    id: int
+class User(UserCreate):
+    model_config = ConfigDict(from_attributes=True)
+
+    id: uuid.UUID
     phone_number: str | None
-    role: ROLE
-    created_at: datetime.datetime
-    updated_at: datetime.datetime
-
-    class Config:
-        from_attributes = True
+    nick_name: str | None
+    role: str
+    created_at: datetime.datetime | None
+    updated_at: datetime.datetime | None

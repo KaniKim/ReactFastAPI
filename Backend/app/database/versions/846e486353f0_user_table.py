@@ -11,6 +11,7 @@ from typing import Sequence, Union
 
 from alembic import op
 import sqlalchemy as sa
+from sqlalchemy import text
 
 from app.choice.user import ROLE
 
@@ -25,7 +26,11 @@ def upgrade() -> None:
     op.create_table(
         "user",
         sa.Column(
-            "id", sa.Integer(), primary_key=True, nullable=False, autoincrement=True
+            "id",
+            sa.UUID,
+            primary_key=True,
+            nullable=False,
+            server_default=text("gen_random_uuid()"),
         ),
         sa.Column("nick_name", sa.String(length=255), nullable=True),
         sa.Column("email", sa.String(length=255), nullable=False),

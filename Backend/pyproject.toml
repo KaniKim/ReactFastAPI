@@ -15,6 +15,8 @@ asyncpg = "^0.29.0"
 black = "^24.4.0"
 greenlet = "^3.0.3"
 psycopg2-binary = "^2.9.9"
+python-jose = {extras = ["cryptography"], version = "^3.3.0"}
+passlib = {extras = ["bcrypt"], version = "^1.7.4"}
 
 
 [build-system]

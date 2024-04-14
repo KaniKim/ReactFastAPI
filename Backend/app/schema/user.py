@@ -8,15 +8,12 @@ from app.choice.user import ROLE
 class UserLogin(BaseModel):
     email: EmailStr
     password: str
-
-
-class UserName(BaseModel):
     first_name: str
     last_name: str
     nick_name: str | None
 
 
-class User(UserLogin, UserName):
+class User(UserLogin):
     id: int
     phone_number: str | None
     role: ROLE

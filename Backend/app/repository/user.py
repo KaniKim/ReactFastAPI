@@ -12,7 +12,7 @@ class UserBaseRepository(ABC):
     async def get_user_by_id(self, user_id: int) -> User | None:
         pass
 
-    async def create_user(self, user: User) -> User:
+    async def create_user(self, user: User) -> None:
         pass
 
     async def update_user_by_id(self, user_id: int, user: User) -> User:
@@ -46,3 +46,6 @@ class UserRepository(UserBaseRepository):
             return None
 
         return User.from_orm(result)
+
+    async def create_user(self, user: User) -> None:
+        self.db.add(UserEntity(**user.dict()))

@@ -16,6 +16,7 @@ user_service = UserService()
 @user_router.get(
     "/{user_id}", status_code=status.HTTP_200_OK, response_model=Union[User, None]
 )
+@transactional
 async def get_user_by_id(user_id: uuid.UUID):
     return await user_service.get_user(user_id=user_id)
 
@@ -23,6 +24,7 @@ async def get_user_by_id(user_id: uuid.UUID):
 @user_router.get(
     "/", status_code=status.HTTP_200_OK, response_model=Union[List[User], None]
 )
+@transactional
 async def get_all_users():
     return await user_service.get_user(user_id=None)
 

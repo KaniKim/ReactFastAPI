@@ -9,7 +9,8 @@ export const NavbarContainer = styled.nav`
   width: 100%;
   padding: 20px 0 20px 0;
   overflow: auto;
-  justify-content: space-between;
+  z-index: 1;
+  justify-content: left;
   align-items: center;
   color: white;
   flex-direction: row;
@@ -21,13 +22,16 @@ export const NavbarContainer = styled.nav`
 
 export const Logo = styled.div`
   font-size: 1.5rem;
-  font-family: 'Sans Serif';
+  padding-left: 20px;
 `;
 
 export const NavLink = styled(Link)`
   color: white;
   text-decoration: none;
   margin-right: 1rem;
+  font-size: 20px;
+  display: block;
+  padding-top: 10px;
 
   &:hover {
     text-decoration: underline;
@@ -39,7 +43,7 @@ export const NavLink = styled(Link)`
   }
 `;
 
-export const NavLinks = styled.div<{ isOpen: boolean }>`
+export const NavLinks = styled.div`
   a {
     color: white;
     text-decoration: none;
@@ -49,7 +53,7 @@ export const NavLinks = styled.div<{ isOpen: boolean }>`
     }
   }
   @media (max-width: 768px) {
-    display: ${(props) => (props.isOpen ? 'flex' : 'none')};
+    display: none;
     flex-direction: column;
     width: 100%;
   }

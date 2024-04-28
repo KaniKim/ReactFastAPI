@@ -1,7 +1,7 @@
 import functools
 from typing import Awaitable, Callable
 
-from app.database.transaction._session import sessionmanager
+from app.database.transaction.session import sessionmanager
 
 AsyncCallable = Callable[..., Awaitable]
 

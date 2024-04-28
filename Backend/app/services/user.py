@@ -3,8 +3,7 @@ from typing import List
 
 from passlib.context import CryptContext
 
-from app.choice.user import ROLE
-from app.database.transaction._session import sessionmanager
+from app.database.transaction.session import sessionmanager
 from app.repository.user import UserRepository
 from app.schema.user import User, UserCreate, UserUpdate
 
@@ -33,11 +32,5 @@ class UserService:
         return False
 
     async def create_user(self, user: UserCreate) -> None:
-        user.password = self.get_password_hash(user.password)
+        user.password = self.pwd_context.hash(user.password)
         await self.user_repo.create_user(user)
-
-    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
-        return self.pwd_context.verify(plain_password, hashed_password)
-
-    def get_password_hash(self, password: str) -> str:
-        return self.pwd_context.hash(password)

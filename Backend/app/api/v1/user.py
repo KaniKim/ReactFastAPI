@@ -1,16 +1,37 @@
 import uuid
-from typing import Union, List
+from typing import Union, List, Annotated
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 from starlette import status
 from starlette.responses import JSONResponse, Response
 
 from app.database.transaction.utils import transactional
+from app.middleware.security import get_current_user
+from app.schema.security import Token
 from app.schema.user import User, UserCreate, UserUpdate
+from app.services.token import TokenService
 from app.services.user import UserService
 
 user_router = APIRouter(prefix="/user", tags=["users"])
 user_service = UserService()
+token_service = TokenService()
+
+
+@user_router.post("/token", status_code=status.HTTP_201_CREATED, response_model=Token)
+@transactional
+async def login_for_access_token(email: str, password: str) -> Token | JSONResponse:
+    if token_service.authenticate_user(email=email, password=password):
+        data = {"email": email}
+        access_token = token_service.create_access_token(data=data)
+        refresh_token = token_service.create_refresh_token(data=data)
+        return Token(
+            access_token=access_token, refresh_token=refresh_token, token_type="Bearer"
+        )
+
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"message": "User information is not correct"},
+    )
 
 
 @user_router.get(
@@ -63,3 +84,9 @@ async def delete_user(user_id: uuid.UUID):
         content={"message": "User is not deleted"},
         status_code=status.HTTP_404_NOT_FOUND,
     )
+
+
+@user_router.get("/me", status_code=status.HTTP_200_OK, response_model=User)
+@transactional
+async def get_user_me(current_user: Annotated[User, Depends(get_current_user)]):
+    return current_user

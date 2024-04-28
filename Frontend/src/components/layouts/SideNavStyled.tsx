@@ -19,7 +19,7 @@ const slideOut = keyframes`
 export const SideMenuContainer = styled.div<{ isOpen: boolean }>`
   height: 100%;
   padding-top: 100px;
-  width: 10%;
+  width: 150px;
   top: 0;
   right: 100%;
   position: fixed;

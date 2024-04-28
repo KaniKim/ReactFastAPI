@@ -10,22 +10,26 @@ from app.entity.user import UserEntity
 
 
 class UserBaseRepository(ABC):
-    async def get_user_by_id(self, user_id: int) -> User | None:
+
+    async def get_user_by_email(self, email: str) -> User | None:
+        pass
+
+    async def get_user_by_id(self, user_id: uuid.UUID) -> User | None:
         pass
 
     async def create_user(self, user: User) -> None:
         pass
 
-    async def update_user_by_id(self, user_id: int, user: User) -> User:
+    async def update_user_by_id(self, user_id: uuid.UUID, user: User) -> User:
         pass
 
-    async def delete_user_by_id(self, user_id: int) -> bool:
+    async def delete_user_by_id(self, user_id: uuid.UUID) -> bool:
         pass
 
     async def get_all_user(self) -> List[User] | None:
         pass
 
-    async def check_user_by_id(self, user_id: int) -> bool:
+    async def check_user_by_id(self, user_id: uuid.UUID) -> bool:
         pass
 
 
@@ -42,6 +46,16 @@ class UserRepository(UserBaseRepository):
         if isinstance(self._session_or_factory, AsyncSession):
             return self._session_or_factory
         return self._session_or_factory()
+
+    async def get_user_by_email(self, email: str) -> User | None:
+        query = await self.db.execute(
+            select(UserEntity).where(UserEntity.email == email)
+        )
+        result = query.scalar_one_or_none()
+
+        if result is None:
+            return None
+        return User.model_validate(result)
 
     async def get_all_user(self) -> List[User] | None:
         query = await self.db.execute(select(UserEntity))
@@ -69,7 +83,7 @@ class UserRepository(UserBaseRepository):
     async def create_user(self, user: UserCreate) -> None:
         self.db.add(UserEntity(**user.dict()))
 
-    async def update_user_by_id(self, user_id: int, user: UserUpdate) -> bool:
+    async def update_user_by_id(self, user_id: uuid.UUID, user: UserUpdate) -> bool:
         result = await self.db.execute(
             update(UserEntity)
             .where(UserEntity.id == user_id)
@@ -78,7 +92,7 @@ class UserRepository(UserBaseRepository):
 
         return result.rowcount > 0
 
-    async def delete_user_by_id(self, user_id: int) -> bool:
+    async def delete_user_by_id(self, user_id: uuid.UUID) -> bool:
         result = await self.db.execute(
             delete(UserEntity).where(UserEntity.id == user_id)
         )

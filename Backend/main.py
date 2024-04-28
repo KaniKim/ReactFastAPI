@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.api import api_router
-from app.database.transaction.middleware import session_middleware
+from app.middleware.database import session_middleware
 
 app = FastAPI()
 

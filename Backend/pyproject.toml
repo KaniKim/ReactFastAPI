@@ -6,7 +6,7 @@ authors = ["KaniKim <kkh5428@gmail.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 fastapi = {extras = ["all"], version = "^0.110.1"}
 sqlalchemy = "^2.0.29"
 alembic = "^1.13.1"
@@ -17,6 +17,8 @@ greenlet = "^3.0.3"
 psycopg2-binary = "^2.9.9"
 python-jose = {extras = ["cryptography"], version = "^3.3.0"}
 passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+mypy = "^1.10.0"
+types-passlib = "^1.7.7.20240327"
 
 
 [build-system]

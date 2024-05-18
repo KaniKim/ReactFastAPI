@@ -1,8 +1,8 @@
-import datetime
+import datetime  # type: ignore
 import os
 
-from jose import jwt
-from passlib.context import CryptContext
+from jose import jwt  # type: ignore
+from passlib.context import CryptContext  # type: ignore
 
 from app.database.transaction.session import sessionmanager
 from app.repository.user import UserRepository
@@ -18,9 +18,13 @@ class TokenService:
         to_encode = data.copy()
 
         if expires_delta:
-            expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(minutes=expires_delta)
+            expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+                minutes=expires_delta
+            )
         else:
-            expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(days=14)
+            expire = datetime.datetime.now(datetime.timezone.utc) + datetime.timedelta(
+                days=14
+            )
 
         to_encode.update({"exp": expire})
         encoded_jwt = jwt.encode(to_encode, self.SECRET_KEY, algorithm=self.ALGORITHM)
@@ -43,5 +47,7 @@ class TokenService:
     async def create_refresh_token(self, data: dict) -> str:
         return self._create_token(data=data, expires_delta=None)
 
-    async def create_access_token(self, data: dict, expires_delta: int | None = None) -> str:
+    async def create_access_token(
+        self, data: dict, expires_delta: int | None = None
+    ) -> str:
         return self._create_token(data=data, expires_delta=expires_delta)
